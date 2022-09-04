@@ -13,4 +13,5 @@ or
 ## How to use
 Enter the url of a video or a playlist and choose the correct button:
 ![image](https://user-images.githubusercontent.com/68274609/188312489-980ce259-18bb-47b9-a9ad-dfe0b3c03ab4.png)
+
 If you want to download only some videos of a playlist, enter the number on the SpinBox field.
