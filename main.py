@@ -1,7 +1,7 @@
 from pytube import YouTube, Playlist
 import tkinter
 from threading import Thread
-from tkinter import ACTIVE, CENTER, DISABLED, Button, Entry, messagebox, filedialog
+from tkinter import ACTIVE, CENTER, DISABLED, messagebox, filedialog
 import shutil
 from tkinter import ttk
 
