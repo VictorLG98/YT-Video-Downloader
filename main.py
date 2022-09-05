@@ -2,7 +2,6 @@ from pytube import YouTube, Playlist
 import tkinter
 from threading import Thread
 from tkinter import ACTIVE, CENTER, DISABLED, messagebox, filedialog
-import shutil
 from tkinter import ttk
 
 
@@ -63,28 +62,23 @@ class YTDownloader():
                 self.active_buttons()
             else:
                 download = messagebox.askyesno(title="Are you sure you want to download?",
-                                            message=f"Title: {yt.title}\nViews: {yt.views}\nAuthor: {yt.author}")
+                                            message=f"Title: {yt.title}\nViews: {yt.views}\nAuthor: {yt.author}")                
 
+                self.deactive_buttons()
                 if download:
-                    self.directory = self.move_video_to_directory()
-                    self.deactive_buttons()
-                    yd = yt.streams.get_highest_resolution()
-                    yd.download()
-                    self.active_buttons()
-                    messagebox.showinfo(title="Info", message="Video downloaded succesfully!")
-                else:
-                    self.active_buttons()
-                    if self.directory:
-                        shutil.move(f"{yt.title}.mp4", self.directory)
+                    choose_directory = messagebox.askyesno(title="Choose directory?", message="Do you want to choose a video path? (Default is current directory)")
+                    if choose_directory:
+                        path = filedialog.askdirectory()
+                        yd = yt.streams.get_highest_resolution()
+                        yd.download(path)
+                        self.active_buttons()
+                        messagebox.showinfo(title="Info", message="Video downloaded succesfully!")
+                    else:
+                        yd = yt.streams.get_highest_resolution()
+                        yd.download()
+                        self.active_buttons()
+                        messagebox.showinfo(title="Info", message="Video downloaded succesfully!")
                 
-    def move_video_to_directory(self):
-        choose_directory = messagebox.askyesno(title="Choose directory?", message="Do you want to choose a video path? (Default is current directory)")
-
-        if choose_directory:
-            video_path = filedialog.askdirectory()
-
-            print(video_path)
-            return video_path
         
     def download_playlist(self):
         try:
@@ -95,11 +89,20 @@ class YTDownloader():
             self.active_buttons()
         else:
             download_all = messagebox.askyesno(title="Atention!", message=f"There are {self.len_playlist} videos on this playlist. Do you want to download them all or only {self.spin.get()}?")
+            choose_directory = messagebox.askyesno(title="Choose directory?", message="Do you want to choose a video path? (Default is current directory)")
+            if choose_directory:
+                path = filedialog.askdirectory()
+            else:
+                pass
+            
             if download_all:
                 for video in p.video_urls:
                     yt = YouTube(video)
                     yd = yt.streams.get_highest_resolution()
-                    yd.download()
+                    if choose_directory:
+                        yd.download(path)
+                    else:
+                        yd.download()
                     print(f"Video {yt.title} downloaded succesfully")
                     
                 self.active_buttons()
@@ -114,7 +117,10 @@ class YTDownloader():
                         for video in p.video_urls[:how_many]:
                             yt = YouTube(video)
                             yd = yt.streams.get_highest_resolution()
-                            yd.download()
+                            if choose_directory:
+                                yd.download(path)
+                            else:
+                                yd.download()
                             print(f"Video {yt.title} downloaded succesfully")
                         
                         self.active_buttons()
